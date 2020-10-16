@@ -12,11 +12,11 @@ def create_sequential_solution(n, path):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print(f"Usage: {sys.argv[0]} project_no validator_path", file=sys.stderr)
+        print(f"Usage: {sys.argv[0]} project_no validator_command", file=sys.stderr)
         exit(-1)
 
     project_no = sys.argv[1]
-    validator_path = sys.argv[2]
+    validator_command = sys.argv[2]
 
     losses = []
     
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     for index in indices:
         for n in range(50, 501, 50):
             create_sequential_solution(n, path)
-            validator = sp.Popen([validator_path, f"{project_no}/instances/{index}_{n}.in", "o", path], stdout=sp.PIPE)
+            validator = sp.Popen([*validator_command.split(" "), f"{project_no}/instances/{index}_{n}.in", "o", path], stdout=sp.PIPE)
             loss = int(validator.communicate()[0].decode("utf-8").split(" ")[1])
             losses.append(loss)
     os.remove(path)
