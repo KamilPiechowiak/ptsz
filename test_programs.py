@@ -20,13 +20,16 @@ if __name__ == "__main__":
         losses_row = []
         times_row = []
         for index in indices:
-            validator = sp.Popen([*validator_command.split(" "), f"{project_no}/instances/{index}_{n}.in", "p", program_commands[index]], stdout=sp.PIPE)
-            out = validator.communicate()[0].decode("utf-8").split(" ")
-            if int(out[0]) != 1:
+            if index not in program_commands.keys():
                 loss, ti = INF, INF
             else:
-                loss = str(int(out[1]))
-                ti = str(round(float(out[2]), 3))#.replace(".", ",")
+                validator = sp.Popen([*validator_command.split(" "), f"{project_no}/instances/{student_index}_{n}.in", "p", program_commands[index]], stdout=sp.PIPE)
+                out = validator.communicate()[0].decode("utf-8").split(" ")
+                if int(out[0]) != 1:
+                    loss, ti = INF, INF
+                else:
+                    loss = str(int(out[1]))
+                    ti = str(round(float(out[2]), 3))#.replace(".", ",")
             losses_row.append(loss)
             times_row.append(ti)
         losses.append(losses_row)
