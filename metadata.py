@@ -11,6 +11,8 @@ indices = [
     "136770",
     "136810",
     "136823"
+    "136810",
+    "136705"
 ]
 program_commands = {
     "136780": "python3 1/src/sample136780.py",
