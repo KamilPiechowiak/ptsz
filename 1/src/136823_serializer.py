@@ -10,6 +10,15 @@ class Task:
         self.w_i = w_i
 
 
+def create_output_file(total_latency, tasks_order):
+    file_descriptor = open(sys.argv[2], "w")
+    file_descriptor.write(str(total_latency) + "\n")
+    file_descriptor.write(str(tasks_order[0]))
+    for i in range(1, len(tasks_order)):
+        file_descriptor.write(" " + str(tasks_order[i]))
+    file_descriptor.close()
+
+
 def get_available_tasks(tasks, time_stamp):
     available_tasks = []
     for task in tasks:
@@ -65,19 +74,24 @@ def serialize_tasks(number_of_tasks, file_descriptor):
             continue
         order.append(selected_task)
 
+    total_latency = 0
     for task in late_tasks:
         order.append(task.id)
+        total_latency += task.w_i
 
     for i in range(len(order)):
         print(str(order[i]))
 
+    create_output_file(total_latency, order)
+
 
 def main():
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         return -1
     file_descriptor = open(sys.argv[1], "r")
     number_of_tasks = int(file_descriptor.readline())
     serialize_tasks(number_of_tasks, file_descriptor)
+    file_descriptor.close()
 
 
 if __name__ == "__main__":
