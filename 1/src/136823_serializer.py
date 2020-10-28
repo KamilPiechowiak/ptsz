@@ -61,7 +61,6 @@ def serialize_tasks(number_of_tasks, file_descriptor):
     time_stamp = 0
     while len(tasks) != 0:
         selected_task, time_stamp = select_task(tasks, time_stamp, late_tasks)
-        print(time_stamp)
         if selected_task == 0:
             continue
         order.append(selected_task)
@@ -70,7 +69,7 @@ def serialize_tasks(number_of_tasks, file_descriptor):
         order.append(task.id)
 
     for i in range(len(order)):
-        print(str(i + 1) + ": " + str(order[i]))
+        print(str(order[i]))
 
 
 def main():
