@@ -1,4 +1,5 @@
 import sys
+import time
 
 class Task:
     #task id
@@ -128,10 +129,13 @@ def sort_tasks():
     tasks.sort(key=lambda task: (task.p + task.r)/(task.w + task.d))
 
 def main():
+    timest = time.time()
     if(len(sys.argv) >= 2):
         find_solution(file=open(sys.argv[1]))
+        # print(f'\n{(time.time() - timest)*1000}')
     else:
         find_solution(sys.stdin)
+        # print(f'\n{(time.time() - timest)*1000}')
 
 
 if __name__ == "__main__":
