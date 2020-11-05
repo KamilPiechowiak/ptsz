@@ -26,5 +26,6 @@ program_commands = [
         "136697": "python3 1/src/solver_136697.py",
         "136705": "python3 1/src/136705.py",
         "136810": "python3 1/src/136810/main.py"
+	"136573": "python3 1/src/solver136573.py"
     }
 ]
