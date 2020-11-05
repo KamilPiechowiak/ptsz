@@ -61,6 +61,7 @@ if __name__ == "__main__":
     jobs = []
     for line in sys.stdin.readlines():
         jobs.append(line)
+    initial_jobs_dictionary = tokenize_jobs(jobs)
     jobs_dictionary, removed_indexes = remove_tardy_jobs(
         initial_jobs_dictionary)
     sorted_jobs = sort_jobs(jobs_dictionary)
