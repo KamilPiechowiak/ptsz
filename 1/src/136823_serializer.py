@@ -10,13 +10,9 @@ class Task:
         self.w_i = w_i
 
 
-def create_output_file(total_latency, tasks_order):
-    file_descriptor = open(sys.argv[2], "w")
-    file_descriptor.write(str(total_latency) + "\n")
-    file_descriptor.write(str(tasks_order[0]))
-    for i in range(1, len(tasks_order)):
-        file_descriptor.write(" " + str(tasks_order[i]))
-    file_descriptor.close()
+def print_series(total_latency, tasks_order):
+    print(str(total_latency))
+    print(" ".join([str(tasks_order[i]) for i in range(len(tasks_order))]))
 
 
 def get_available_tasks(tasks, time_stamp):
@@ -51,7 +47,7 @@ def select_task(tasks, time_stamp, late_tasks):
             selected_task_number = task.id
             new_timestamp += task.p_i
             tasks.remove(task)
-    return selected_task_number + 1, new_timestamp
+    return selected_task_number, new_timestamp
 
 
 def get_task(line):
@@ -59,11 +55,11 @@ def get_task(line):
     return parameters[0], parameters[1], parameters[2], parameters[3]
 
 
-def serialize_tasks(number_of_tasks, file_descriptor):
+def serialize_tasks(number_of_tasks):
     tasks = []
     for i in range(number_of_tasks):
-        p_j, r_j, d_j, w_j = get_task(file_descriptor.readline())
-        tasks.append(Task(i, int(p_j), int(r_j), int(d_j), int(w_j)))
+        p_j, r_j, d_j, w_j = get_task(input())
+        tasks.append(Task(i + 1, int(p_j), int(r_j), int(d_j), int(w_j)))
 
     order = []
     late_tasks = []
@@ -79,19 +75,12 @@ def serialize_tasks(number_of_tasks, file_descriptor):
         order.append(task.id)
         total_latency += task.w_i
 
-    for i in range(len(order)):
-        print(str(order[i]))
-
-    create_output_file(total_latency, order)
+    print_series(total_latency, order)
 
 
 def main():
-    if len(sys.argv) != 3:
-        return -1
-    file_descriptor = open(sys.argv[1], "r")
-    number_of_tasks = int(file_descriptor.readline())
-    serialize_tasks(number_of_tasks, file_descriptor)
-    file_descriptor.close()
+    number_of_tasks = int(input())
+    serialize_tasks(number_of_tasks)
 
 
 if __name__ == "__main__":
