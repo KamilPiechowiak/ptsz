@@ -15,7 +15,7 @@ def sort_by_length(job):
     return job[JOB][READY]/(job[JOB][WEIGHT])
 
 
-def instance_test_args(instance_file: str):
+def instance_test_args(instance_file):
     if instance_file is None:
         print(f'Invalid argument provided: {instance_file}')
         exit(-1)
@@ -58,11 +58,13 @@ def rank_jobs(jobs_count, jobs):
 
 
 def main(argv):
-    output = open('seq.out', 'w+')
-    instance_file = argv[0]
-    jobs_count, jobs = instance_test_args(instance_file)
-    indexed_jobs = [[i + 1, jobs[i]] for i in range(len(jobs))]
-    criteria, ranked_jobs = rank_jobs(jobs_count, indexed_jobs)
+    tasks = []
+    jobs_c = int(input())
+    for i in range(jobs_c):
+        task = input().split(" ")
+        tasks.append([int(x) for x in task])
+    indexed_jobs = [[i + 1, tasks[i]] for i in range(len(tasks))]
+    criteria, ranked_jobs = rank_jobs(jobs_c, indexed_jobs)
     print(criteria)
     for i in range(len(ranked_jobs)):
         print(ranked_jobs[i], end=' ')
