@@ -23,38 +23,45 @@ def objective(instance, solution):
     return objective
 
 
-def solve2(instance):
-    n = instance.shape[0]
-    instance = np.c_[instance, np.arange(n)]
-    instance[:, 3] = instance[:, 3] + 1
-    mask = (instance[:, 1] + instance[:, 0]) > instance[:, 2]
-    rest = np.where(mask)
-    keep = np.where(np.logical_not(mask))
-    filtered = instance[keep]
-
-    filtered = filtered[np.argsort(filtered[:, 1])]
-    end = 0
-    deleted = 0
-    size = filtered.shape[0]
-    for i in np.arange(size):
-        end = np.maximum(end, filtered[i-deleted, 1]) + filtered[i-deleted, 0]
-        if end > filtered[i-deleted, 2]:
-            max_ratio_idx = np.argmax(filtered[:(i-1-deleted), 0] / filtered[:(i-1-deleted), 3])
-            rest = np.append(rest, filtered[max_ratio_idx, 4])
-            filtered = np.delete(filtered, max_ratio_idx, axis=0)
-            deleted += 1
-            end = 0
-            for j in np.arange(i-deleted):
-                end = np.maximum(end, filtered[j, 1]) + filtered[j, 0]
-    rest = np.argsort(instance[rest, 1])
-    return np.append(filtered[:, 4], rest) + 1
-
 def solve(instance):
-    return np.argsort(instance[:, 2]) + 1
+    P = 0; R = 1; D = 2; W = 3; I = 4
+    n = instance.shape[0]
+    tmp = np.zeros((n, 5), dtype=int)
+    tmp[:, :-1] = instance
+    tmp[:, -1] = np.arange(n)
+    instance = tmp
+    ratio = instance[:, W]/instance[:, P]
+    instance = instance[np.argsort(instance[:, R])]
+    rejected = instance[:, R] + instance[:, P] > instance[:, D]
+    C = 0
+    for i, job in enumerate(instance):
+        if rejected[i]:
+            continue
+        C = np.maximum(C, instance[i, R]) + instance[i, P]
+        if C > instance[i, D]:
+            max_ratio = ratio[0]
+            max_ratio_idx = 0
+            for j, r in enumerate(ratio[:i]):
+                if rejected[j]:
+                    continue
+                if r > max_ratio:
+                    max_ratio = r
+                    max_ratio_idx = j
+            rejected[max_ratio_idx] = True
+            C = 0
+            for k in np.arange(i):
+                if rejected[k]:
+                    continue
+                C = np.maximum(C, instance[k, R]) + instance[k, P]
+
+    accepted = np.logical_not(rejected)
+    return np.append(instance[accepted, I], instance[rejected, I]) + 1
+
 
 
 if __name__ == "__main__":
     n, instance = load_instance()
     solution = solve(instance)
+    test = np.sort(solution)
     objective = objective(instance, solution)
     print_solution(objective, solution)
