@@ -155,7 +155,7 @@ n=int(input())
 dp=[0]*n
 for i in range(n):
     tmp=parse(input())
-    lst.append(Task(i, tmp[1], tmp[0], tmp[2], tmp[3]))
+    lst.append(Task(i, tmp[1], tmp[0], tmp[2]-1, tmp[3]))
 
 sorted_lst=sorted(lst, key=lambda x: -x.weight/x.p_time)
 loge=int(math.ceil(math.log(n)))
@@ -210,12 +210,11 @@ while type(nachste)!=type(1):
         print("LIPA!")
     if nachste.prev!=-1 and nachste.prev.end >= nachste.beg:
         print("LIPA!")
-
     print(str(nachste.task.nr+1), end=' ')
     nachste=nachste.next
 
-for i in range(0, n):
-    if dp[i]==0:
-        print(i+1, end=' ')
+for x in sorted_lst:
+    if dp[x.nr]==0:
+        print(x.nr+1, end=' ')
 
 print()
