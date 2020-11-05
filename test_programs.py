@@ -10,7 +10,7 @@ if __name__ == "__main__":
         print(f"Usage: {sys.argv[0]} project_no validator_command student_index", file=sys.stderr)
         exit(-1)
     
-    project_no = sys.argv[1]
+    project_no = int(sys.argv[1])
     validator_command = sys.argv[2]
     student_index = sys.argv[3]
 
@@ -20,10 +20,10 @@ if __name__ == "__main__":
         losses_row = []
         times_row = []
         for index in indices:
-            if index not in program_commands.keys():
+            if index not in program_commands[project_no].keys():
                 loss, ti = INF, INF
             else:
-                validator = sp.Popen([*validator_command.split(" "), f"{project_no}/instances/{student_index}_{n}.in", "p", program_commands[index]], stdout=sp.PIPE)
+                validator = sp.Popen([*validator_command.split(" "), f"{project_no}/instances/{student_index}_{n}.in", "p", program_commands[project_no][index]], stdout=sp.PIPE)
                 out = validator.communicate()[0].decode("utf-8").split(" ")
                 if int(out[0]) != 1:
                     loss, ti = INF, INF
