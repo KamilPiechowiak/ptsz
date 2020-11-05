@@ -71,7 +71,7 @@ def find_solution(file):
     global tasks
     for i in range(size):
         p,r,d,w = load_task(file.readline())
-        tasks.append(Task(i,p,r,d,w))
+        tasks.append(Task(i+1,p,r,d,w))
     sort_tasks()
     timer = 0
     chosen_tasks = []
