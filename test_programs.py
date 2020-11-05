@@ -20,6 +20,7 @@ if __name__ == "__main__":
         losses_row = []
         times_row = []
         for index in indices:
+            print(index)
             if index not in program_commands[project_no].keys():
                 loss, ti = INF, INF
             else:
