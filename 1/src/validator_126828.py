@@ -21,7 +21,7 @@ class Task:
 size = 50
 ind = '136775'
 instancePath = f'../instances/{ind}_{size}.in'
-solutionPath = f'C:/Users/HP/PycharmProjects/ptsz_project/testFiles/seq_{size}.out'
+solutionPath = f'seqTest.out'
 # array of tasks read from file
 tasks = []
 solution = 0
