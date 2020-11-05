@@ -1,24 +1,27 @@
 import sys
 def solve():
     
-    if len(sys.argv) != 2:
-        print("zla liczba argumentow, podaj tylko plik z instancja")
-        return -1
+    # if len(sys.argv) != 2:
+        # print("zla liczba argumentow, podaj tylko plik z instancja")
+        # return -1
         
       
-    instance_file = sys.argv[1]
+    # instance_file = sys.argv[1]
     
-    student_index = instance_file[0:6]
-    f = open(instance_file, "r")
-    n = int(f.readline())
+    
+    # f = open(instance_file, "r")
+    n = int(sys.stdin.readline())
     prdw = []
-    for idx, line in enumerate(f):
+    for idx, line in enumerate(sys.stdin.readlines()):
         prdw.append([idx+1] + (line.strip()).split(" ") + [0]) # + [0,0] to status i kolejnosc
         
-    f.close()
-
+    # prdw = []
+    # for idx, line in enumerate(f):
+  
+    # f.close()
+    
     if(n != len(prdw)):
-        print("Niepoprawny plik z instancja!")
+        print(f"Niepoprawny plik z instancja n: {n} , len(prdw): {len(prdw)}!")
         return False
         
         
