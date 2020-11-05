@@ -1,70 +1,63 @@
 #!/usr/bin/env python3
 import sys
 
-u = 0
-t = 1
-N = 2
-q = 3
-A = 0
-C = 0
+w = 0
+S = 1
+H = 2
+l = 3
+O = 0
+M = 0
 
 
-def read_files(w: str):
-    w = open(w, "r+")
-    return int(w.readline().rstrip()), [[int(x) for x in line.strip().split(' ')] for line in w.readlines()]
-
-
-def find_next(jobs, y, L):
-    p = None
-    b = -1000
-    n = []
+def find_next(jobs, K, j):
+    B = None
+    R = -1000
+    s = []
     for i in range(len(jobs)):
-        if i + 1 not in L and y > jobs[i][t]:
-            d = 2 * jobs[i][q] / C - jobs[i][N] / A
-            if y + jobs[i][u] > jobs[i][N]:
-                n.append(i)
-            elif d > b:
-                b = d
-                p = i
-    if p is None and n.__len__() != 0:
-        p = n.pop()
-    return p
+        if i + 1 not in j and K >= jobs[i][S]:
+            P = 2 * jobs[i][l] / M - jobs[i][H] / O
+            if K + jobs[i][w] > jobs[i][H]:
+                s.append(i)
+            elif P > R:
+                R = P
+                B = i
+    if B is None and s.__len__() != 0:
+        B = s.pop()
+    return B
 
 
-def rank_jobs(l, jobs):
-    global A, C
+def rank_jobs(t, jobs):
+    global O, M
     for i in range(len(jobs)):
-        if jobs[i][N] > A:
-            A = jobs[i][N]
-        if jobs[i][q] > C:
-            C = jobs[i][q]
-    L = []
-    y = 0
-    J = 0
-    while l != L.__len__():
-        r = find_next(jobs, y, L)
-        if r is None:
-            y += 1
+        if jobs[i][H] > O:
+            O = jobs[i][H]
+        if jobs[i][l] > M:
+            M = jobs[i][l]
+    j = []
+    K = 0
+    F = 0
+    while t != j.__len__():
+        U = find_next(jobs, K, j)
+        if U is None:
+            K += 1
         else:
-            y += jobs[r][u]
-            if y > jobs[r][N]:
-                J += jobs[r][q]
-            L.append(r + 1)
-    return J, L
+            K += jobs[U][w]
+            if K > jobs[U][H]:
+                F += jobs[U][l]
+            j.append(U + 1)
+    return F, j
 
 
 def main(argv):
-    f = []
-    a = int(input())
-    for i in range(a):
-        v = input().split(" ")
-        f.append([int(x) for x in v])
-    M, L = rank_jobs(a, f)
-    sys.stdout.write(M.__str__())
-    sys.stdout.write("\n")
-    for i in range(len(L)):
-        sys.stdout.write(L[i].__str__())
-        sys.stdout.write(" ")
+    p = []
+    m = int(input())
+    for i in range(m):
+        h = input().split(" ")
+        p.append([int(x.strip()) for x in h if x != ' '])
+    c, j = rank_jobs(m, p)
+    print(c)
+    for i in range(len(j)):
+        print(j[i], end=' ')
 
 
 if __name__ == "__main__":
