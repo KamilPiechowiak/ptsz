@@ -11,6 +11,8 @@ class Task:
     d = 0
     # wage
     w = 0
+    #is_late task
+    is_late = 0
 
     def __init__(self,t_id, p, r, d, w):
         self.task_id = int(t_id)
@@ -18,6 +20,7 @@ class Task:
         self.r = int(r)
         self.d = int(d)
         self.w = int(w)
+        self.is_late = 0
 
     def __repr__(self):
         return repr((self.task_id, self.p, self.r,self.d,self.w))
@@ -68,11 +71,10 @@ def find_solution(file):
     for i in range(size):
         p,r,d,w = load_task(file.readline())
         tasks.append(Task(i,p,r,d,w))
-    print(tasks)
     sort_tasks()
-    print(tasks)
     timer = 0
     chosen_tasks = []
+    late_tasks = []
     available_tasks = tasks
     # print(len(available_tasks))
     #find solution
@@ -88,6 +90,8 @@ def find_solution(file):
             i_id, dur = find_longest_task(chosen_tasks)
             task1 = chosen_tasks[i_id]
             timer -= chosen_tasks[i_id].p
+            task1.is_late = 1
+            late_tasks.append(task1)
             chosen_tasks.remove(task1)
             chosen_tasks.append(task)
             if timer > task.r:
@@ -96,48 +100,38 @@ def find_solution(file):
                 timer += task.r + task.p
             available_tasks.insert(0,task1)
             available_tasks.remove(task)
-
     solution = 0
-    print(chosen_tasks)
+    # print(chosen_tasks)
     chosen_tasks += available_tasks
+    #print(len(chosen_tasks))
+    for t in late_tasks:
+        solution += t.w
+
+    #print(f'solution found by counting late tasks {solution}')
     clock = 0
-    for tas in chosen_tasks:
-        # first task setup clock
-        if tas == chosen_tasks[0]:
-            clock = tas.r + tas.p
-        else:
-            # increment our clock by task time duration
-            if clock < tas.r:
-                # if taks is not ready, we must wait, assign to clock ready value plus duration time
-                clock = tas.r + tas.p
-            else:
-                # else increment our clock by task time duration
-                clock += tas.p
-
-        # if our clock is greater than deadline, task is late
-        if clock > tas.d:
-            solution += tas.w
-
-    print(f'finished {len(chosen_tasks)} with solution {solution}')
-    solution_file = open(sys.argv[2],'w')
-    solution_file.write(f'{solution}\n')
     task_order = ''
     for t in chosen_tasks:
         task_order += f'{t.task_id} '
-    print(task_order)
-    solution_file.write(task_order)
+    #print(f'finished {len(chosen_tasks)} with solution {solution}')
+    if len(sys.argv) >= 3:
+        solution_file = open(sys.argv[2],'w')
+        solution_file.write(f'{solution}\n')
+        solution_file.write(task_order)
+    else:
+        print(solution)
+        [print(t.id, end=' ') for t in chosen_tasks]
+
 
 def sort_tasks():
     global tasks
-    print('Sorting tasks')
-    tasks.sort(key=lambda task: task.d)
+    #print('Sorting tasks')
+    tasks.sort(key=lambda task: (task.w + task.d)/(task.p + task.d))
 
 def main():
-    if(len(sys.argv) != 3):
-        print('Bad arguments')
-        return -1
-    print("Hello world")
-    find_solution(file=open(sys.argv[1]))
+    if(len(sys.argv) >= 2):
+        find_solution(file=open(sys.argv[1]))
+    else:
+        find_solution(sys.stdin)
 
 
 if __name__ == "__main__":
