@@ -2,7 +2,7 @@
 import sys
 import os
 import time
-from src.s136780 import Task, read_instance, compute_loss
+from my.s136780 import Task, read_instance, compute_loss
 
 def run_program(instance_path, program_command, output_path):
     t1 = time.time()
