@@ -50,7 +50,7 @@ def solve2(instance):
     return np.append(filtered[:, 4], rest) + 1
 
 def solve(instance):
-    return np.argsort(instance[:, 2])
+    return np.argsort(instance[:, 2]) + 1
 
 
 if __name__ == "__main__":
