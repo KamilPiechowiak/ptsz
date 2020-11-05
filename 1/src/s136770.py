@@ -155,7 +155,7 @@ n=int(input())
 dp=[0]*n
 for i in range(n):
     tmp=parse(input())
-    lst.append(Task(i, tmp[1]+1, tmp[0], tmp[2], tmp[3]))
+    lst.append(Task(i, tmp[1], tmp[0], tmp[2]-1, tmp[3]))
 
 sorted_lst=sorted(lst, key=lambda x: -x.weight/x.p_time)
 loge=int(math.ceil(math.log(n)))
