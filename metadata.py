@@ -17,4 +17,5 @@ indices = [
 ]
 program_commands = {
     "136780": "python3 1/src/sample136780.py",
+    "136811": "1/src/136811_solver"
 }
