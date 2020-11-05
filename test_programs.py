@@ -3,7 +3,7 @@ import sys
 from metadata import indices, program_commands
 import subprocess as sp
 
-INF = str(int(1e18))
+INF = ""
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
@@ -20,20 +20,25 @@ if __name__ == "__main__":
         losses_row = []
         times_row = []
         for index in indices:
-            if index not in program_commands[project_no].keys():
-                loss, ti = INF, INF
-            else:
-                validator = sp.Popen([*validator_command.split(" "), f"{project_no}/instances/{student_index}_{n}.in", "p", program_commands[project_no][index]], stdout=sp.PIPE)
-                out = validator.communicate()[0].decode("utf-8").split(" ")
-                if int(out[0]) != 1:
+            print(index)
+            try:
+                if index not in program_commands[project_no].keys():
                     loss, ti = INF, INF
                 else:
-                    loss = str(int(out[1]))
-                    ti = str(round(float(out[2]), 3))#.replace(".", ",")
+                    validator = sp.Popen([*validator_command.split(" "), f"{project_no}/instances/{student_index}_{n}.in", "p", program_commands[project_no][index]], stdout=sp.PIPE)
+                    out = validator.communicate()[0].decode("utf-8").split(" ")
+                    if int(out[0]) != 1:
+                        loss, ti = INF, INF
+                    else:
+                        loss = str(int(out[1]))
+                        ti = str(round(float(out[2]), 3))#.replace(".", ",")
+            except:
+                loss, ti = INF, INF
             losses_row.append(loss)
             times_row.append(ti)
         losses.append(losses_row)
         times.append(times_row)
+        # break
 
     print("\n".join(["\t".join(row) for row in losses]), end="\n\n")
     print("\n".join(["\t".join(row) for row in times]), end="\n\n")
