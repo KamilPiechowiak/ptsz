@@ -24,6 +24,7 @@ program_commands = [
         "127183": "python3 1/src/127183_scheduler.py",
         "136811": "1/src/136811_solver",
         "136697": "python3 1/src/solver_136697.py",
-        "136705": "python3 1/src/136705.py"
+        "136705": "python3 1/src/136705.py",
+        "136715": "python 1/src/136715.py",
     }
 ]
