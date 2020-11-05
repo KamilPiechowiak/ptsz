@@ -119,13 +119,13 @@ def find_solution(file):
         solution_file.write(task_order)
     else:
         print(solution)
-        [print(t.id, end=' ') for t in chosen_tasks]
+        [print(t.task_id, end=' ') for t in chosen_tasks]
 
 
 def sort_tasks():
     global tasks
     #print('Sorting tasks')
-    tasks.sort(key=lambda task: (task.w + task.d)/(task.p + task.d))
+    tasks.sort(key=lambda task: (task.p + task.r)/(task.w + task.d))
 
 def main():
     if(len(sys.argv) >= 2):
