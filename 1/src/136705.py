@@ -64,10 +64,8 @@ def main(argv):
     indexed_jobs = [[i + 1, jobs[i]] for i in range(len(jobs))]
     criteria, ranked_jobs = rank_jobs(jobs_count, indexed_jobs)
     print(criteria)
-    output.write(f'{criteria.__str__()}\n')
     for i in range(len(ranked_jobs)):
         print(ranked_jobs[i], end=' ')
-        output.write(f'{ranked_jobs[i].__str__()} ')
 
 
 if __name__ == "__main__":
