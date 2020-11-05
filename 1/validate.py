@@ -29,9 +29,10 @@ def check_order(n, order):
 def test_result(instance_path, output_path):
     with open(instance_path) as file:
         tasks = read_instance(file)
+    n = len(tasks)
     with open(output_path) as file:
         loss = int(file.readline())
-        order = [int(x)-1 for x in file.readline().split(" ") if x != "\n"]
+        order = [int(x)-1 for x in file.readline().split(" ")[:n] if x != "\n"]
     
     if check_order(len(tasks), order) == False:
         return 0, 0
