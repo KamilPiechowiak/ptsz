@@ -31,6 +31,7 @@ program_commands = [
         "136823": "python3 1/src/136823_serializer.py",
         "136775": "python3 1/src/algorithm136775.py",
         "126828": "python3 1/src/solution126828.py",
-        "132211": "python3 1/src/132211.py"
+        "132211": "python3 1/src/132211.py",
+        "136836": "python3 1/src/136836.py"
     }
 ]
