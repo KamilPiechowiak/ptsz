@@ -1,13 +1,5 @@
 import nltk
 import sys
-import numpy as np
-
-
-def read_instance():
-    n = int(sys.stdin.readline())
-    jobs = np.loadtxt(sys.stdin, dtype=np.int)
-    return n, jobs
-
 
 def tokenize_jobs(jobs):
     indexes, tokenized_jobs = [], []
@@ -65,8 +57,10 @@ def write_output(sorted_jobs, i_j_d, removed_indexes, n):
 
 
 if __name__ == "__main__":
-    n, jobs = read_instance()
-    initial_jobs_dictionary = tokenize_jobs(jobs)
+    n = int(sys.stdin.readline())
+    jobs = []
+    for line in sys.stdin.readlines():
+        jobs.append(line)
     jobs_dictionary, removed_indexes = remove_tardy_jobs(
         initial_jobs_dictionary)
     sorted_jobs = sort_jobs(jobs_dictionary)
