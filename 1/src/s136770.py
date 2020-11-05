@@ -213,4 +213,9 @@ while type(nachste)!=type(1):
 
     print(str(nachste.task.nr+1), end=' ')
     nachste=nachste.next
+
+for i in range(0, n):
+    if dp[i]==0:
+        print(i+1, end=' ')
+
 print()
