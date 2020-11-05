@@ -18,7 +18,7 @@ class Task_in_order:
     def __init__(self, task, beg, end, prev, nexte):
         self.task=task
         self.beg=beg
-        self.end=end-1 #Kontrowersja
+        self.end=end #Kontrowersja
         self.prev=prev
         self.next=nexte
 
@@ -43,7 +43,7 @@ def try_insert_before(nachste, task_x):
         left_possible=max(nachste.prev.end+1, task_x.r_time)
     right_possible=min(nachste.beg-1, task_x.d_time)
 
-    if right_possible - left_possible >= task_x.p_time-1:
+    if right_possible - left_possible >= task_x.p_time:
         cur=Task_in_order(task_x, left_possible, left_possible+task_x.p_time, nachste.prev, nachste)
         if nachste.prev!=-1:
             nachste.prev.next=cur
@@ -62,7 +62,7 @@ def pusherman(task_x):
 
     while (last.prev!=-1):
         last.end=min(last.task.d_time, last.next.beg-1) if last.next!=-1 else last.task.d_time
-        last.beg=last.end-last.task.p_time+1
+        last.beg=last.end-last.task.p_time
         last=last.prev
 
     
@@ -71,13 +71,13 @@ def pusherman(task_x):
         if (res==1):
             return
         last.beg=max(last.prev.end+1, last.task.r_time) if last.prev!=-1 else last.task.r_time
-        last.end=last.beg+last.task.p_time-1
+        last.end=last.beg+last.task.p_time
         seminal=last
         last=last.next
 
     left_possible=max(seminal.end+1, task_x.r_time)
     right_possible=task_x.d_time
-    if right_possible - left_possible >= task_x.p_time-1:
+    if right_possible - left_possible >= task_x.p_time:
         cur=Task_in_order(task_x, left_possible, left_possible+task_x.p_time, seminal, -1)
         seminal.next=cur
 
@@ -100,7 +100,7 @@ def easy_add(task_x):
 
         left_possible=max(last.end+1, task_x.r_time)
         right_possible=task_x.d_time
-        if right_possible - left_possible >= task_x.p_time-1:
+        if right_possible - left_possible >= task_x.p_time:
             cur=Task_in_order(task_x, left_possible, left_possible+task_x.p_time, last, -1)
             last.next=cur
         else:
@@ -119,15 +119,15 @@ def caterpillar(task_x):
         summa+=right.task.weight
         while left.task.nr != right.task.nr:
             lefty=left.end+1
-            righty=right.next.beg-1 if right.next!=-1 else right.end+1+task_x.p_time
-            if righty-lefty < task_x.p_time-1:
+            righty=right.next.beg-1 if right.next!=-1 else right.end+2+task_x.p_time
+            if righty-lefty < task_x.p_time:
                 break
             summa-=left.task.weight
             left=left.next
         lefty=max(left.prev.end+1, task_x.r_time) if left.prev!=-1 else task_x.r_time
         righty=min(right.next.beg-1, task_x.d_time) if right.next!=-1 else task_x.d_time
 
-        if righty-lefty >= task_x.p_time-1 and summa+current_best_cut < task_x.weight:
+        if righty-lefty >= task_x.p_time and summa+current_best_cut < task_x.weight:
             current_best_cut = task_x.weight-summa
             best_left_cut=left
             best_right_cut=right
@@ -197,10 +197,12 @@ for i in range(0, n):
         cost+=lst[i].weight
     all_cost+=lst[i].weight
 
+
 print(str(cost))
 nachste=first
+res=[0]*n
 while type(nachste)!=type(1):
-    if nachste.task.p_time != nachste.end-nachste.beg+1:
+    if nachste.task.p_time != nachste.end-nachste.beg:
         print("LIPA!")
     if nachste.beg < nachste.task.r_time:
         print("LIPA!")
@@ -211,11 +213,12 @@ while type(nachste)!=type(1):
     if nachste.prev!=-1 and nachste.prev.end >= nachste.beg:
         print("LIPA!")
 
+    res[nachste.task.nr]=1
+    cost-=nachste.task.weight
     print(str(nachste.task.nr+1), end=' ')
     nachste=nachste.next
 
 for i in range(0, n):
     if dp[i]==0:
         print(i+1, end=' ')
-
 print()
