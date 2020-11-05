@@ -6,6 +6,8 @@ Instancje nazywamy według schematu `{numer_indeksu}_{rozmiar}.in`, np. `136780_
 ## Algorytm
 Swój algorytm umieszczamy w `{numer_projektu}/src`. Po dodaniu programu, aktualizujemy słownik `program_commands` w pliku metadata.py, podając dla klucza będącego swoim numerem indeksu polecenie do uruchomienia programu.
 
+Program powinien czytać instancję ze standardowego wejścia i wypisywać wynik na standardowe wyjście. Przykład `sample136780.py`.
+
 ## Weryfikator
 Weryfikator każdy pisze sam. Jednak, żeby skorzystać ze skryptów obliczających wyniki zbiorcze, powinien on przestrzegać następujących wymagań:
 1. Weryfikator przyjmuje dokładnie 3 argumenty:

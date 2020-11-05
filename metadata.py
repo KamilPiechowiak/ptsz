@@ -15,6 +15,16 @@ indices = [
     "136836",
     "136573"
 ]
-program_commands = {
-    "136780": "python3 1/src/sample136780.py",
-}
+program_commands = [
+    None,
+    {
+        "136770": "python3 1/src/s136770.py",
+        "136780": "python3 1/src/s136780.py",
+        "136834": "python3 1/src/136834/algorithm.py",
+        "127183": "python3 1/src/127183_scheduler.py",
+        "136811": "1/src/136811_solver",
+        "136697": "python3 1/src/solver_136697.py",
+        "136705": "python3 1/src/136705.py",
+        "136810": "python3 1/src/136810/main.py"
+    }
+]
