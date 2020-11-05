@@ -19,5 +19,6 @@ program_commands = [
     None,
     {
         "136780": "python3 1/src/s136780.py",
+        "136834": "python3 1/src/136834/algorithm.py",
     },
 ]
