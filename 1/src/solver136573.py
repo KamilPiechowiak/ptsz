@@ -23,7 +23,7 @@ def objective(instance, solution):
     return objective
 
 
-def solve(instance):
+def solve2(instance):
     n = instance.shape[0]
     instance = np.c_[instance, np.arange(n)]
     instance[:, 3] = instance[:, 3] + 1
@@ -48,6 +48,9 @@ def solve(instance):
                 end = np.maximum(end, filtered[j, 1]) + filtered[j, 0]
     rest = np.argsort(instance[rest, 1])
     return np.append(filtered[:, 4], rest) + 1
+
+def solve(instance):
+    return np.argsort(instance[:, 2])
 
 
 if __name__ == "__main__":
