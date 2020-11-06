@@ -25,6 +25,8 @@ EVALUATE_MY = 'evaluate_my'
 EVALUATE_ALL = 'evaluate_all'
 TEST = 'test'
 
+TEST_INDEX = '000000'
+
 # TODO determine correct timeout
 TIMEOUT = 1
 
@@ -57,7 +59,7 @@ class Runner:
                 instance = Instance.load(self.get_instance_path(index, n))
                 evaluator_output = eval.validate_schedule(instance, Solution.get_dummy_solution(n, 5))
                 results.append(evaluator_output.value)
-        log.info("\n".join([str(round(value, 2)) for value in results]))
+        print("\n".join([str(round(value, 2)) for value in results]))
 
     def evaluate_my_algorithm(self):
         _, evals, algs = self.__index_setup()
@@ -72,7 +74,7 @@ class Runner:
                 alg_ouput = eval.validate_algorithm(instance, alg)
                 relative_loss = (seq_ouput.value - alg_ouput.value) / seq_ouput.value
                 if index == INDEX:
-                    log.info("\t".join(map(lambda x: str(round(x, 2)),
+                    print("\t".join(map(lambda x: str(round(x, 2)),
                                         [n, seq_ouput.value, alg_ouput.value, 100 * relative_loss, alg_ouput.time])))
                 relative_losses_sum += relative_loss
                 relative_losses_count += 1
@@ -103,14 +105,14 @@ class Runner:
                 times_row.append(ti)
             losses.append(losses_row)
             times.append(times_row)
-        log.info("\n".join(["\t".join(row) for row in losses]), end="\n\n")
-        log.info("\n".join(["\t".join(row) for row in times]), end="\n\n")
+        print("\n".join(["\t".join(row) for row in losses]), end="\n\n")
+        print("\n".join(["\t".join(row) for row in times]), end="\n\n")
 
     # TODO - some actual testing
     def test(self):
         log.info('Discovering setup...')
         log.info(f'Found index: {INDEX}\n')
-        gens, evals, algs = self.__index_setup()
+        gens, evals, algs = self.__index_setup(keep_test_index=True)
 
         log.info('Detected components:')
         log.info(f'\t{gens}')
@@ -122,7 +124,7 @@ class Runner:
         log.info(f'{evals[INDEX]}')
         log.info(f'{algs[INDEX]}')
 
-    def __index_setup(self):
+    def __index_setup(self, keep_test_index=False):
         tup = [[self.__index(cls) for cls in cat] for cat in
                map(lambda x: x.__subclasses__(), [Generator, Evaluator, Algorithm])]
 
@@ -135,6 +137,9 @@ class Runner:
             return res
 
         tup = lmap(array_to_dict_array, tup)
+        if not keep_test_index:
+            for classes in tup:
+                del classes[TEST_INDEX]
         return tup
 
     def __index(self, cls):
