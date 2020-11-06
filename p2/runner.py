@@ -1,11 +1,17 @@
 import argparse
 import logging
 import re
+import os
+from func_timeout import func_timeout, FunctionTimedOut
+import sys
+sys.path.append(".")
 
 from p2.my_properties import INDEX
+from p2.properties import INDICES
 from p2.src.algorithm_api import Algorithm
 from p2.src.evaluator_api import Evaluator
 from p2.src.generator_api import Generator
+from p2.src.data_api import Instance, Solution
 from p2.src.utils import lmap
 
 logging.basicConfig(format='[%(levelname)s] %(asctime)s - %(message)s', level=logging.INFO)
@@ -17,6 +23,8 @@ EVALUATE_MY = 'evaluate_my'
 EVALUATE_ALL = 'evaluate_all'
 TEST = 'test'
 
+# TODO determine correct timeout
+TIMEOUT = 1
 
 class Runner:
 
@@ -29,22 +37,70 @@ class Runner:
             TEST: self.test,
         }[mode]
 
-    # TODO
+    def get_instance_path(self, index, n):
+        return os.path.join(os.path.dirname(__file__), "instances", f"{index}_{n}.in")
+
     def generate_all_instances(self):
-        pass
+        gen : Generator = self.__index_setup()[0][INDEX][0]()
+        for n in range(50, 501, 50):
+            instance : Instace = gen.generate(n, 5)
+            instance.dump(self.get_instance_path(INDEX, n))
 
-    # TODO
     def validate_all_instances(self):
-        pass
+        eval : Evaluator = self.__index_setup()[1][INDEX][0]()
+        results = []
+        for index in INDICES:
+            for n in range(50, 501, 50):
+                instance = Instance.load(self.get_instance_path(index, n))
+                evaluatorOutput = eval.validate_schedule(instance, Solution.get_dummy_solution(n, 5))
+                results.append(evaluatorOutput.value)
+        print("\n".join([str(round(value, 2)) for value in results]))
 
-    # TODO
     def evaluate_my_algorithm(self):
-        pass
+        _, evals, algs = self.__index_setup()
+        eval : Evaluator = evals[INDEX][0]()
+        alg : Algorithm = algs[INDEX][0]()
+        relative_losses_sum = 0.0
+        relative_losses_count = 0
+        for index in INDICES:
+            for n in range(50, 501, 50):
+                instance = Instance.load(self.get_instance_path(index, n))
+                seqOuput = eval.validate_schedule(instance, Solution.get_dummy_solution(n, 5))
+                algOuput = eval.validate_algorithm(instance, alg)
+                relative_loss = (seqOuput.value-algOuput.value)/seqOuput.value
+                if index == INDEX:
+                    print("\t".join(map(lambda x : str(round(x, 2)),[n, seqOuput.value, algOuput.value, 100*relative_loss, algOuput.time])))
+                relative_losses_sum+=relative_loss
+                relative_losses_count+=1
 
-    # use https://pypi.org/project/func-timeout/
-    # TODO
+        print(f"\nMean relative loss: {100*relative_losses_sum/relative_losses_count}")
+
     def evaluate_all_algorithms(self):
-        pass
+        _, evals, algs = self.__index_setup()
+        eval : Evaluator = evals[INDEX][0]()
+
+        losses, times = [], []
+        for n in range(50, 501, 50):
+            instance = Instance.load(self.get_instance_path(INDEX, n))
+            losses_row, times_row = [], []
+            for index in INDICES:
+                if index not in algs.keys():
+                    loss, ti = "", ""
+                else:
+                    try:
+                        algOutput = func_timeout(TIMEOUT, eval.validate_algorithm, args=(instance, algs[index][0]()))
+                        if algOutput.correct:
+                            loss, ti = str(round(algOutput.value, 2)), str(round(algOutput.time, 2))
+                        else:
+                            loss, ti = "", ""
+                    except FunctionTimedOut:
+                        loss, ti = "", ""
+                losses_row.append(loss)
+                times_row.append(ti)
+            losses.append(losses_row)
+            times.append(times_row)
+        print("\n".join(["\t".join(row) for row in losses]), end="\n\n")
+        print("\n".join(["\t".join(row) for row in times]), end="\n\n")
 
     # TODO - some actual testing
     def test(self):
