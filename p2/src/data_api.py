@@ -53,27 +53,13 @@ class Instance(NamedTuple, Dumpable, metaclass=ABCNamedTupleMeta):
                 file.write(f'{task.duration} {task.ready}\n')
 
 
-class Permutation(list):
-    def __init__(self, vlist):
-        if not self.is_correct(vlist):
-            raise ValueError('This is not a 1 to N permutation')
-        super(Permutation, self).__init__(vlist)
-
-    @staticmethod
-    def is_correct(permutation) -> bool:
-        n = len(permutation)
-        flags = np.zeros(n, dtype=bool)
-        for i in range(0, n):
-            flags[permutation[i] - 1] = True
-
-        return all(flags)
-
 class Schedule(list):
     """Creates tasks' scheduling
         :param n: number of tasks
         :param m: number of machines
         :param schedule: list of m lists with tasks assigned to each machine (total number of tasks should be equal to n)
     """
+
     def __init__(self, n: int, m: int, schedule: list):
         self.n, self.m = n, m
         if not self.is_correct(n, m, schedule):
@@ -87,20 +73,21 @@ class Schedule(list):
             for idx in machine_tasks:
                 if idx <= 0 or idx > n:
                     return False
-                flags[idx-1] = True
+                flags[idx - 1] = True
         return all(flags)
 
     @staticmethod
     def get_dummy_schedule(n: int, m: int) -> 'Schedule':
-        tasks_num = [n//m]*m
-        tasks_num[m-1] = n-(n//m)*(m-1)
+        tasks_num = [n // m] * m
+        tasks_num[m - 1] = n - (n // m) * (m - 1)
         schedule = []
         start = 1
         for i in range(m):
-            schedule.append([j for j in range(start, start+tasks_num[i])])
-            start+=tasks_num[i]
-        
+            schedule.append([j for j in range(start, start + tasks_num[i])])
+            start += tasks_num[i]
+
         return Schedule(n, m, schedule)
+
 
 def check_if_int(value):
     try:
@@ -108,6 +95,7 @@ def check_if_int(value):
         return True
     except:
         return False
+
 
 class Solution(NamedTuple, Dumpable, metaclass=ABCNamedTupleMeta):
     score: float
@@ -119,7 +107,7 @@ class Solution(NamedTuple, Dumpable, metaclass=ABCNamedTupleMeta):
             score = float(file.readline())
             schedule = [
                 [int(idx) for idx in line.split(' ') if check_if_int(idx)]
-            for line in file.readlines()]
+                for line in file.readlines()]
             m = len(schedule)
             n = sum([len(schedule_i) for schedule_i in schedule])
             return Solution(score=score, schedule=Schedule(n=n, m=m, schedule=schedule))

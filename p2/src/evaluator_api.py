@@ -1,10 +1,9 @@
+import time
 from abc import ABC, abstractmethod
 from typing import NamedTuple
 
 from p2.src.algorithm_api import Solution, Algorithm
 from p2.src.data_api import Instance
-
-import time
 
 
 class EvaluatorOutput(NamedTuple):
@@ -26,5 +25,5 @@ class Evaluator(ABC):
         time_1 = time.time()
         output = algorithm.run(in_data)
         time_2 = time.time()
-        output = self.evaluate(in_data, output, (time_2-time_1)*1000)
+        output = self.evaluate(in_data, output, (time_2 - time_1) * 1000)
         return output
