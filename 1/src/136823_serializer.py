@@ -1,4 +1,5 @@
 import sys
+import math
 
 
 class Task:
@@ -8,6 +9,7 @@ class Task:
         self.r_i = r_i
         self.d_i = d_i
         self.w_i = w_i
+        self.reserve = 1
 
 
 def print_series(total_latency, tasks_order):
@@ -19,19 +21,25 @@ def get_available_tasks(tasks, time_stamp):
     available_tasks = []
     for task in tasks:
         if task.r_i <= time_stamp:
+            task.reserve = task.d_i - time_stamp - task.p_i
             available_tasks.append(task)
     return available_tasks
 
 
 def remove_late_tasks(tasks, time_stamp, late_tasks):
+    new_late_tasks = []
     for task in tasks:
         if task.p_i + time_stamp > task.d_i:
             late_tasks.append(task)
-            tasks.remove(task)
+            new_late_tasks.append(task)
+
+    for task in new_late_tasks:
+        tasks.remove(task)
 
 
 def compare(task):
-    return task.w_i
+    unit_cost = task.w_i / (task.p_i + 0.05 * task.reserve)
+    return unit_cost
 
 
 def select_task(tasks, time_stamp, late_tasks):
@@ -41,7 +49,7 @@ def select_task(tasks, time_stamp, late_tasks):
         return 0, time_stamp + 1
     selected_task_number = 0
     new_timestamp = time_stamp
-    available_tasks.sort(key=compare)
+    available_tasks.sort(reverse=True, key=compare)
     for task in tasks:
         if task.id == available_tasks[0].id:
             selected_task_number = task.id
