@@ -25,10 +25,11 @@ def bestWeightPerTime(readyJobs):
     )['job']
 
 
-def answerSolve(n, jobs):
+def answerSolve(jobs):
     availableJobsByReadiness = jobs[:]
+    lateJobs = list(filter(lambda x: x.w == 0, availableJobsByReadiness))
+    availableJobsByReadiness = list(filter(lambda x: x.w != 0, availableJobsByReadiness))
     availableJobsByReadiness.sort(key=lambda x: x.r)
-    lateJobs = list()
     readyJobs = []
     doneJobs = []
     clock = 0
@@ -97,6 +98,6 @@ if __name__ == '__main__':
     n = int(processes[0])
     # solution = dummy_solution(n)
     jobs = parse_jobs(processes)
-    solution = answerSolve(n, jobs)
+    solution = answerSolve(jobs)
     solution = solution.strip()
     sys.stdout.write(f'{solution}')
