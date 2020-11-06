@@ -74,9 +74,7 @@ def find_solution(file):
         tasks.append(Task(i+1,p,r,d,w))
     sort_tasks()
     timer = 0
-    chosen_tasks = []
-    late_tasks = []
-    available_tasks = tasks.copy()
+    solution = 0
     # print(len(available_tasks))
     #for every task in list check if he can manage before deadline
     for task in tasks:
@@ -87,34 +85,18 @@ def find_solution(file):
         if timer + task.p <= task.d:
             #task isn't late
             #add to chosen
-            chosen_tasks.append(task)
             #increment timer
             timer = timer + task.p
             #remove from available
-            available_tasks.remove(task)
         else:
-            #task is late.
-            #find
-            i_id, dur = find_longest_task(chosen_tasks)
-            task1 = chosen_tasks[i_id]
-            timer -= dur
-            task1.is_late = 1
-            chosen_tasks.remove(task1)
-            chosen_tasks.append(task)
-            #increment timer
+            solution = solution + task.w
             timer = timer + task.p
-            available_tasks.insert(0,task1)
-            available_tasks.remove(task)
-    solution = 0
-    # print(chosen_tasks)
-    chosen_tasks += available_tasks
-    #print(len(chosen_tasks))
-    for t in available_tasks:
-        solution += t.w
 
+    # print(chosen_tasks)
+    #print(len(chosen_tasks))
     #print(f'solution found by counting late tasks {solution}')
     task_order = ''
-    for t in chosen_tasks:
+    for t in tasks:
         task_order += f'{t.task_id} '
     #print(f'finished {len(chosen_tasks)} with solution {solution}')
     if len(sys.argv) >= 3:
@@ -123,7 +105,7 @@ def find_solution(file):
         solution_file.write(task_order)
     else:
         print(solution)
-        [print(t.task_id, end=' ') for t in chosen_tasks]
+        [print(t.task_id, end=' ') for t in tasks]
 
 
 def sort_tasks():
