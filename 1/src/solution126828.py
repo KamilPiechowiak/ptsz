@@ -80,17 +80,13 @@ def find_solution(file):
     for task in tasks:
         #check if task is ready if not set timer to it.
         if timer < task.r:
-            timer = task.r
-        #if he can, add him to chosen list, increment timer
-        if timer + task.p <= task.d:
-            #task isn't late
-            #add to chosen
-            #increment timer
-            timer = timer + task.p
-            #remove from available
+            timer = task.r +task.p
         else:
-            solution = solution + task.w
             timer = timer + task.p
+        #if he can, add him to chosen list, increment timer
+        if timer > task.d:
+            solution = solution + task.w
+
 
     # print(chosen_tasks)
     #print(len(chosen_tasks))
