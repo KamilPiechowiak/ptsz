@@ -73,7 +73,7 @@ class Runner:
                 relative_losses_sum+=relative_loss
                 relative_losses_count+=1
 
-        print(f"\nMean relative loss: {100*relative_losses_sum/relative_losses_count}")
+        print(f"\nMean relative improvement: {round(100*relative_losses_sum/relative_losses_count, 2)}")
 
     def evaluate_all_algorithms(self):
         _, evals, algs = self.__index_setup()
@@ -145,9 +145,9 @@ if __name__ == '__main__':
                         choices=['generate', 'validate', 'evaluate_my', 'evaluate_all', 'test'],
                         help="""
 generate - generates your instances
-validate - validates your instances
+validate - validates all instances
 evaluate_my - evaluates your algorithm on your instances
-evaluate_all - evaluates your algorithm
+evaluate_all - evaluates all algorithms on your instances
 test - tests your setup
                         """)
     args = parser.parse_args()

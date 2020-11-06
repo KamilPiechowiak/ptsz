@@ -102,6 +102,13 @@ class Schedule(list):
         
         return Schedule(n, m, schedule)
 
+def check_if_int(value):
+    try:
+        int(value)
+        return True
+    except:
+        return False
+
 class Solution(NamedTuple, Dumpable, metaclass=ABCNamedTupleMeta):
     score: float
     schedule: Schedule
@@ -109,14 +116,18 @@ class Solution(NamedTuple, Dumpable, metaclass=ABCNamedTupleMeta):
     @staticmethod
     def load(path: str):
         with open(path) as file:
-            score = int(file.readline())
-            schedule = Schedule(lmap(int, file.readline().split(' ')))
-            return Solution(score=score, schedule=schedule)
+            score = float(file.readline())
+            schedule = [
+                [int(idx) for idx in line.split(' ') if check_if_int(idx)]
+            for line in file.readlines()]
+            m = len(schedule)
+            n = sum([len(schedule_i) for schedule_i in schedule])
+            return Solution(score=score, schedule=Schedule(n=n, m=m, schedule=schedule))
 
     def dump(self, path: str):
         with open(path, 'w') as file:
             file.write(f'{self.score}\n')
-            file.write(f'{" ".join(self.permutation)}\n')
+            file.write("\n".join([" ".join(lmap(str, schedule_i)) for schedule_i in self.schedule]))
 
     @staticmethod
     def get_dummy_solution(n: int, m: int):

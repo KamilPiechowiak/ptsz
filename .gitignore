@@ -3,3 +3,4 @@ my
 generate.py
 __pycache__
 *.out
+tmp*
