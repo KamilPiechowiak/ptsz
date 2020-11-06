@@ -6,7 +6,7 @@ import sys
 
 from func_timeout import func_timeout, FunctionTimedOut
 
-sys.path.append(".")
+sys.path.append('.')
 
 from p2.my_properties import INDEX
 from p2.properties import INDICES
@@ -43,7 +43,7 @@ class Runner:
         }[mode]
 
     def get_instance_path(self, index, n):
-        return os.path.join(os.path.dirname(__file__), "instances", f"{index}_{n}.in")
+        return os.path.join(os.path.dirname(__file__), 'instances', f'{index}_{n}.in')
 
     def generate_all_instances(self):
         gen: Generator = self.__index_setup()[0][INDEX][0]()
@@ -54,11 +54,15 @@ class Runner:
     def validate_all_instances(self):
         eval: Evaluator = self.__index_setup()[1][INDEX][0]()
         results = []
+        not_found = set([])
         for index in INDICES:
             for n in range(50, 501, 50):
-                instance = Instance.load(self.get_instance_path(index, n))
-                evaluator_output = eval.validate_schedule(instance, Solution.get_dummy_solution(n, 5))
-                results.append(evaluator_output.value)
+                try:
+                    instance = Instance.load(self.get_instance_path(index, n))
+                    evaluator_output = eval.validate_schedule(instance, Solution.get_dummy_solution(n, 5))
+                    results.append(evaluator_output.value)
+                except FileNotFoundError:
+                    not_found.add(index)
         print("\n".join([str(round(value, 2)) for value in results]))
 
     def evaluate_my_algorithm(self):
@@ -67,19 +71,25 @@ class Runner:
         alg: Algorithm = algs[INDEX][0]()
         relative_losses_sum = 0.0
         relative_losses_count = 0
+        not_found = set([])
+        print('\t'.join(['n', 'dummy_solution', 'algorithm_solution', 'time']))
         for index in INDICES:
             for n in range(50, 501, 50):
-                instance = Instance.load(self.get_instance_path(index, n))
-                seq_ouput = eval.validate_schedule(instance, Solution.get_dummy_solution(n, 5))
-                alg_ouput = eval.validate_algorithm(instance, alg)
-                relative_loss = (seq_ouput.value - alg_ouput.value) / seq_ouput.value
-                if index == INDEX:
-                    print("\t".join(map(lambda x: str(round(x, 2)),
-                                        [n, seq_ouput.value, alg_ouput.value, 100 * relative_loss, alg_ouput.time])))
-                relative_losses_sum += relative_loss
-                relative_losses_count += 1
+                try:
+                    instance = Instance.load(self.get_instance_path(index, n))
+                    seq_ouput = eval.validate_schedule(instance, Solution.get_dummy_solution(n, 5))
+                    alg_ouput = eval.validate_algorithm(instance, alg)
+                    relative_loss = (seq_ouput.value - alg_ouput.value) / seq_ouput.value
+                    if index == INDEX:
+                        print('\t'.join(map(lambda x: str(round(x, 2)),
+                                            [n, seq_ouput.value, alg_ouput.value, 100 * relative_loss, alg_ouput.time])))
+                    relative_losses_sum += relative_loss
+                    relative_losses_count += 1
+                except FileNotFoundError:
+                    not_found.add(index)
 
-        log.info(f"\nMean relative improvement: {round(100 * relative_losses_sum / relative_losses_count, 2)}")
+        log.info(f'Not found instances of: {not_found}')
+        log.info(f'Mean relative improvement: {round(100 * relative_losses_sum / relative_losses_count, 2)}')
 
     def evaluate_all_algorithms(self):
         _, evals, algs = self.__index_setup()
@@ -91,22 +101,22 @@ class Runner:
             losses_row, times_row = [], []
             for index in INDICES:
                 if index not in algs.keys():
-                    loss, ti = "", ""
+                    loss, ti = '', ''
                 else:
                     try:
                         alg_output = func_timeout(TIMEOUT, eval.validate_algorithm, args=(instance, algs[index][0]()))
                         if alg_output.correct:
                             loss, ti = str(round(alg_output.value, 2)), str(round(alg_output.time, 2))
                         else:
-                            loss, ti = "", ""
+                            loss, ti = '', ''
                     except FunctionTimedOut:
-                        loss, ti = "", ""
+                        loss, ti = '', ''
                 losses_row.append(loss)
                 times_row.append(ti)
             losses.append(losses_row)
             times.append(times_row)
-        print("\n".join(["\t".join(row) for row in losses]), end="\n\n")
-        print("\n".join(["\t".join(row) for row in times]), end="\n\n")
+        print('\n'.join(['\t'.join(row) for row in losses]), end='\n\n')
+        print('\n'.join(['\t'.join(row) for row in times]), end='\n\n')
 
     # TODO - some actual testing
     def test(self):

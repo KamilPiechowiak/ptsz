@@ -71,7 +71,7 @@ class Schedule(list):
         flags = np.zeros(n, dtype=bool)
         for machine_tasks in schedule:
             for idx in machine_tasks:
-                if idx <= 0 or idx > n:
+                if idx < 1 or idx > n:
                     return False
                 flags[idx - 1] = True
         return all(flags)
