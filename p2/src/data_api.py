@@ -30,14 +30,14 @@ class ABCNamedTupleMeta(ABCMeta, NamedTupleMeta):
 class Instance(NamedTuple, Dumpable, metaclass=ABCNamedTupleMeta):
     no_tasks: int
     no_machines: int
-    machine_speeds: List[int]
+    machine_speeds: List[float]
     tasks: List[Task]
 
     @staticmethod
     def load(path: str) -> 'Instance':
         with open(path) as file:
             n = int(file.readline())
-            b_array = lmap(int, file.readline().split(' ')[:5])
+            b_array = lmap(float, file.readline().split(' ')[:5])
             tasks = lmap(lambda t: Task(*t), [list(map(int, file.readline().split(' ')[:2])) for i in range(n)])
             data_in = Instance(no_tasks=n,
                                no_machines=len(b_array),
