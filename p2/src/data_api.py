@@ -48,7 +48,7 @@ class Instance(NamedTuple, Dumpable, metaclass=ABCNamedTupleMeta):
     def dump(self, path: str):
         with open(path, 'w') as file:
             file.write(f'{self.no_tasks}\n')
-            file.write(f'{" ".join(map(str, self.machine_speeds))}\n')
+            file.write(f'{" ".join(map("{:.1f}".format, self.machine_speeds))}\n')
             for task in self.tasks:
                 file.write(f'{task.duration} {task.ready}\n')
 
