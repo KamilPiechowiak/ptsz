@@ -9,11 +9,10 @@ class Evaluator136836(Evaluator):
         current_score = in_data.no_machines * [0]
         for num, machine in enumerate(output.schedule):
             for task_no in machine:
-                task = in_data.tasks[task_no-1]
+                task = in_data.tasks[task_no - 1]
                 current_moment[num] = max(current_moment[num], task.ready)
                 current_moment[num] += task.duration
                 current_score[num] += current_moment[num] - task.ready
 
         result = sum(current_score) / len(current_score)
-        return EvaluatorOutput(output.score==result, result, 0)
-
+        return EvaluatorOutput(output.score == result, result, 0)

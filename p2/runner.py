@@ -86,7 +86,8 @@ class Runner:
                         my_relative_losses_sum += relative_loss
                         my_relative_losses_count += 1
                         print('\t'.join(map(lambda x: str(round(x, 2)),
-                                            [n, seq_ouput.value, alg_ouput.value, 100 * relative_loss, alg_ouput.time])))
+                                            [n, seq_ouput.value, alg_ouput.value, 100 * relative_loss,
+                                             alg_ouput.time])))
                     relative_losses_sum += relative_loss
                     relative_losses_count += 1
                 except FileNotFoundError:
