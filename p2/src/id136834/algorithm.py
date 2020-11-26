@@ -1,8 +1,6 @@
 from math import floor
 from p2.src.algorithm_api import Algorithm
 from p2.src.data_api import Instance, Schedule, Solution, Task
-from p2.src.id136834.generator import Generator136834
-from p2.src.id136834.validator import Evaluator136834
 
 class ScheduleTask:
     def __init__(self, duration: int, ready: int, no: int = 0, start: float = 0, end: float = 0):
@@ -53,22 +51,23 @@ class Algorithm136834(Algorithm):
     def ready_global(self, instance: Instance):
         return self.sort_global(instance, key=lambda task: task.ready)
 
+    def mft(self, instance: Instance, schedule: Schedule):
+        flow_sum = 0
+        for machine_i, machine_tasks in enumerate(schedule):
+            time = 0
+            for task_i in machine_tasks:
+                task = instance.tasks[task_i - 1]
+                time = max(time, task.ready)
+                duration = task.duration * instance.machine_speeds[machine_i]
+                flow_sum += time + duration - task.ready
+                time += duration
+        return flow_sum / instance.no_tasks
+
     def run(self, instance: Instance):
         algorithm = self.ready_global
 
         for i, task in enumerate(instance.tasks):
             instance.tasks[i] = ScheduleTask(task.duration, task.ready, no=i + 1)
         schedule = algorithm(instance)
-        evaluator = Evaluator136834()
-        score = evaluator.mft(instance, schedule)
+        score = self.mft(instance, schedule)
         return Solution(score, schedule)
-
-def main():
-    generator = Generator136834()
-    instance = generator.generate(10, 5)
-    instance.dump('/dev/stdout')
-    print()
-    algo = Algorithm136834()
-    solution = algo.run(instance)
-    solution.dump('/dev/stdout')
-    print()
