@@ -71,24 +71,31 @@ class Runner:
         alg: Algorithm = algs[INDEX][0]()
         relative_losses_sum = 0.0
         relative_losses_count = 0
+        my_relative_losses_sum = 0.0
+        my_relative_losses_count = 0
         not_found = set([])
         print('\t'.join(['n', 'dummy_solution', 'algorithm_solution', 'time']))
         for index in INDICES:
             for n in range(50, 501, 50):
                 try:
                     instance = Instance.load(self.get_instance_path(index, n))
-                    seq_ouput = eval.validate_schedule(instance, Solution.get_dummy_solution(n, 5))
-                    alg_ouput = eval.validate_algorithm(instance, alg)
-                    relative_loss = (seq_ouput.value - alg_ouput.value) / seq_ouput.value
+                    seq_output = eval.validate_schedule(instance, Solution.get_dummy_solution(n, 5))
+                    alg_output = eval.validate_algorithm(instance, alg)
+                    relative_loss = (seq_output.value - alg_output.value) / seq_output.value
                     if index == INDEX:
+                        my_relative_losses_sum += relative_loss
+                        my_relative_losses_count += 1
                         print('\t'.join(map(lambda x: str(round(x, 2)),
-                                            [n, seq_ouput.value, alg_ouput.value, 100 * relative_loss, alg_ouput.time])))
+                                            [n, seq_output.value, alg_output.value, 100 * relative_loss, alg_output.time])))
+                        # print("\\\\\n\\hline")
                     relative_losses_sum += relative_loss
                     relative_losses_count += 1
+                    # print(round(alg_output.value, 2))
                 except FileNotFoundError:
                     not_found.add(index)
 
         log.info(f'Not found instances of: {not_found}')
+        log.info(f'Mean relative improvement on own instances: {round(100 * my_relative_losses_sum / my_relative_losses_count, 2)}')
         log.info(f'Mean relative improvement: {round(100 * relative_losses_sum / relative_losses_count, 2)}')
 
     def evaluate_all_algorithms(self):
