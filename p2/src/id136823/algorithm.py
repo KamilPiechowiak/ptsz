@@ -11,7 +11,7 @@ class Machine:
 
     def assign_task(self, task):
         self.schedule.append(task.task_id)
-        self.machine_time = min(self.machine_time, task.ready) + task.duration * self.machine_speed
+        self.machine_time = max(self.machine_time, task.ready) + task.duration * self.machine_speed
         return self.machine_time - task.ready
 
     def is_available(self, current_time):
@@ -113,4 +113,4 @@ class Algorithm136823(Algorithm):
 
         schedule = Schedule(len(tasks), len(machines), order)
 
-        return Solution(total_flow / len(tasks), schedule)
+        return Solution(round(total_flow / in_data.no_tasks, 6), schedule)
