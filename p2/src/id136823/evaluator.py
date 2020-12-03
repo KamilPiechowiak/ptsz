@@ -22,4 +22,4 @@ class Evaluator136823(Evaluator):
                     score += current_task.duration * speeds[machine]
                     current_time = current_task.ready + current_task.duration * speeds[machine]
         average_score = score / number_tasks
-        return average_score == value, average_score
+        return abs(average_score - value) < 0.001, round(average_score, 6)
