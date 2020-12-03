@@ -6,41 +6,35 @@ from p2.src.id136810.alg.Machine import Machine
 from p2.src.id136810.validator.Criterium import Criterium
 
 
-def flatten(list: List[List[Any]]):
-    return [element for sublist in list for element in sublist]
+def flatten(input_list: List[List[Any]]):
+    return [element for sublist in input_list for element in sublist]
 
 
 def isMomentBetween(start: float, moment: float, end: float):
     return start <= moment < end
 
 
-def isMomentBefore(moment: float, start: float, end: float):
-    return moment <= start and moment < end
-
-
-def fitsBeforeScheduled(job_duration: float, closest_begin: float, next_begin: float):
-    return closest_begin + job_duration <= next_begin
-
-
 def getClosestBeginMoment(current_job: Job, machine: Machine):
-    closest_begin = current_job.ready_moment
-    for job in machine.scheduled_jobs:
-        if isMomentBefore(current_job.ready_moment, job.begin, job.end):
-            if fitsBeforeScheduled(current_job.duration * machine.speed, closest_begin, job.begin):
-                return closest_begin
-        closest_begin = max(closest_begin, job.end)
-    return closest_begin
+    return max(machine.end_moment, current_job.ready_moment)
 
 
-def getCostAndBegin(job: Job, machine: Machine):
+def getSecondJobCost(current_job: Job, other_job: Job, machine: Machine):
+    start = getClosestBeginMoment(current_job, machine)
+    end = start + current_job.duration * machine.speed
+    loss = end + other_job.duration * machine.speed - other_job.ready_moment
+    return loss
+
+
+def getFirstJobCost(job: Job, machine: Machine):
     closest_begin = getClosestBeginMoment(job, machine)
-    return closest_begin + job.duration * machine.speed - job.ready_moment, closest_begin
+    return closest_begin + job.duration * machine.speed - job.ready_moment
 
 
-def isOverlapping(current_job: Job, other_job: Job, machine_speed: float, ready: int = -1):
-    actual_ready = max(current_job.ready_moment, ready)
+def isOverlapping(current_job: Job, other_job: Job, machine_speed: float):
+    actual_ready = current_job.ready_moment
     possible_end = actual_ready + current_job.duration * machine_speed
-    checkedMoment = other_job.ready_moment + (other_job.duration * machine_speed) / 2
+    checkedMoment = other_job.ready_moment + (other_job.duration * machine_speed) / 4
+    #checkedMoment = other_job.ready_moment
     return isMomentBetween(actual_ready, checkedMoment, possible_end)
 
 

@@ -2,3 +2,4 @@ numpy
 scipy
 func_timeout
 pandas
+itertools
