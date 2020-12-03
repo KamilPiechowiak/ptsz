@@ -149,7 +149,7 @@ class Algorithm136770(Algorithm):
             lst=[]
             while fst!=-1:
                 lst.append(fst.no)
-                full_cost=full_cost+fst.t0-fst.task.ready
+                full_cost=full_cost+fst.t_end-fst.task.ready
 
                 fst=fst.nexte
             my_schedule.append(lst)
