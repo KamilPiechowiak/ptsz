@@ -53,8 +53,8 @@ class Algorithm136811(Algorithm):
         schedule = [[] for _ in range(in_data.no_machines)]
 
         tasks = pd.DataFrame(data=[[t.ready, t.duration] for t in in_data.tasks])
-        tasks = tasks.sort_values(by=[0, 1], ascending=[True, False])
-        # tasks = tasks.sort_values(by=[0], ascending=[True])
+        # tasks = tasks.sort_values(by=[0, 1], ascending=[True, False])
+        tasks = tasks.sort_values(by=[0], ascending=[True])
 
         machines = dict()
         for inx, m in enumerate(in_data.machine_speeds):
