@@ -12,7 +12,7 @@ class Algorithm127183(Algorithm):
     @staticmethod
     def get_instance_data(machines_list, tasks_list):
         Algorithm127183.machines = [Machine(counter+1, speed) for counter, speed in enumerate(machines_list)]
-        Algorithm127183.tasks = [Task(counter+1, data[0], data[1]) for counter, data in enumerate(tasks_list)]
+        Algorithm127183.tasks = [Task(counter+1, task.duration, task.ready) for counter, task in enumerate(tasks_list)]
 
     @staticmethod
     def sort_lists():
