@@ -16,15 +16,18 @@ class Algorithm127183(Algorithm):
 
     @staticmethod
     def sort_lists():
-        Algorithm127183.machines.sort(key=lambda x: x.speed, reverse=True)  # sort by speed DESC
         Algorithm127183.tasks.sort(key=lambda x: (x.ready, x.duration))  # sort by readiness ASC if equal then by duration ASC
 
     @staticmethod
     def pick_machine():
+        free_machines = []
         for machine in Algorithm127183.machines:
             if machine.check_status(Algorithm127183.clock):
-                return machine
-        return None
+                free_machines.append(machine)
+        if free_machines == []:
+            return None
+        else:
+            return min(free_machines, key=lambda x: x.speed)
 
     @staticmethod
     def assign_task():
@@ -38,6 +41,7 @@ class Algorithm127183(Algorithm):
     def run(self, in_data: Instance) -> Solution:
         self.get_instance_data(in_data.machine_speeds, in_data.tasks)
         self.sort_lists()
+        self.clock, self.flow_time = 0.0, 0.0
         task = self.assign_task()
         while task:
             machine = self.pick_machine()
@@ -48,8 +52,7 @@ class Algorithm127183(Algorithm):
                 self.clock = ready_machine.clock
                 self.flow_time += ready_machine.add_task(task)
             task = self.assign_task()
-        self.machines.sort(key=lambda x: x.speed)
-        sequence = [machine.list_of_tasks for machine in Algorithm127183.machines]
+        sequence = [machine.list_of_tasks for machine in self.machines]
         final_sequence = Schedule(len(self.tasks), len(self.machines), sequence)
         mean_flow_time = round(self.flow_time / in_data.no_tasks, 6)
         return Solution(mean_flow_time, final_sequence)
