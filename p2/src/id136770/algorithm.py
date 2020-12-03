@@ -48,9 +48,10 @@ class Algorithm136770(Algorithm):
 
             cur_task=order_of_destiny
             while cur_task!=-1:
-                if prev!=-1 and cur_task.t0 < cur_task.prev.t_end:
+                if cur_task.prev!=-1 and cur_task.t0 < cur_task.prev.t_end:
                     cur_task.t0=cur_task.prev.t_end
                     cur_task.t_end=cur_task.t0+mach.coef*cur_task.task.duration
+
                 cur_task=cur_task.nexte
 
         def procession(task, machine):
@@ -142,18 +143,22 @@ class Algorithm136770(Algorithm):
             overall_cost+=cur_cost
 
         my_schedule=[]
+        full_cost=0
         for mach in strangers:
             fst=mach.first
             lst=[]
             while fst!=-1:
                 lst.append(fst.no)
+                full_cost=full_cost+fst.t0-fst.task.ready
+
                 fst=fst.nexte
             my_schedule.append(lst)
+        full_cost/=len(tasks)
+
         #print(sum([len(x) for x in my_schedule]), sum([sum(x) for x in my_schedule])-(n*(n+1)//2))
         #print(my_schedule)
-        #print(overall_cost/len(tasks))
 
-        return Solution(score=overall_cost/len(tasks), schedule=my_schedule)
+        return Solution(score=full_cost, schedule=my_schedule)
 
 
 if __name__=='__main__':
