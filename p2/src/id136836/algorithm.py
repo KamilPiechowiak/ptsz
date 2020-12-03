@@ -28,5 +28,4 @@ class Algorithm136836(Algorithm):
 
             score += C - ready
         score /= n
-        score = 2
         return Solution(score=score, schedule=Schedule(n, m, schedule))
