@@ -10,8 +10,6 @@ class Evaluator136810(Evaluator):
     def evaluate(self, in_data: Instance, output: Solution, time: float = None) -> EvaluatorOutput:
         correctness = Correctness()
 
-        correctness.checkCorrectness(in_data.no_tasks, output)
-
         criterium = Criterium(in_data, output)
 
         criteriumValue = criterium.getCriterium()
