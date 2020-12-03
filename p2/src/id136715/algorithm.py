@@ -13,18 +13,18 @@ from p2.src.data_api import Instance,Solution,Schedule,Task
 cCLnG=1
 cCLnA=0
 def cCLne(cCLnu,cCLnE,cCLnP,cCLnb,cCLnJ,enumerated,cCLnz):
- cCLnu.sort(key=lambda m:m.speed)
+ cCLnu.sort(key=lambda m:m.cCLnI)
  cCLnE.sort(key=lambda task:task[cCLnG].duration)
  for cCLnq in cCLnu:
   if cCLnv(cCLnE)>0:
    cCLny=cCLnE.pop(0)
-   t=cCLnz+cCLny[cCLnG].duration*cCLnq.speed
+   t=cCLnz+cCLny[cCLnG].duration*cCLnq.cCLnI
    cCLnP.append(cCLny[0])
    cCLnb[cCLnq.index]=cCLnb[cCLnq.index]._replace(t=t)
    cCLnJ[cCLnq.index].append(cCLny[0])
    enumerated.remove(cCLny)
 class Algorithm136715(Algorithm):
- def cCLnl(self,cCLno:Instance)->Solution:
+ def run(self,cCLno:Instance)->Solution:
   class MST(NamedTuple):
    cCLnI:cCLnV
    t:cCLnV
@@ -58,4 +58,3 @@ class Algorithm136715(Algorithm):
   cCLnd=cCLnd/cCLno.no_tasks
   cCLnJ=Schedule(cCLno.no_tasks,cCLno.no_machines,cCLnJ)
   return Solution(cCLnd,cCLnJ)
-# Created by pyminifier (https://github.com/liftoff/pyminifier)
