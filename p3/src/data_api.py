@@ -94,7 +94,7 @@ class Solution(NamedTuple, Dumpable, metaclass=ABCNamedTupleMeta):
         with open(path) as file:
             score = float(file.readline())
             schedule = [int(idx) for idx in file.readline().split(' ') if check_if_int(idx)]
-            return Solution(score=score, schedule=Schedule(n=len(schedule), schedule=schedule))
+            return Solution(score=score, schedule=Schedule(no_tasks=len(schedule), schedule=schedule))
 
     def dump(self, path: str):
         with open(path, 'w') as file:
