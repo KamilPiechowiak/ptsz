@@ -18,5 +18,4 @@ class Generator132211(Generator):
             weight = random.randint(4, 14)
             t = Task(durations, due_date, weight)
             tasks.append(t)
-            tasks = sorted(tasks, key=lambda x: x.due_date)
         return Instance(no_tasks, no_machines, tasks)
