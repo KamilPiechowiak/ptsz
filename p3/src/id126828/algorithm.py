@@ -2,6 +2,7 @@ import sys
 
 from p3.src.algorithm_api import Algorithm
 from p3.src.data_api import Instance, Solution, Schedule
+from p3.src.id126828.evaluator import Evaluator126828
 
 
 def find_best_task_by_due_date_duration(tasks, clock):
@@ -79,6 +80,7 @@ class Algorithm126828(Algorithm):
 
         add_rest_tasks_to_schedule(less_important_tasks, schedule_by_id, solution, clock)
 
-        solution = solution / sum([t[1].weight for t in tasks_with_id])
-
-        return Solution(solution, schedule=Schedule(in_data.no_tasks, schedule_by_id))
+        schedule = Schedule(in_data.no_tasks, schedule_by_id)
+        #solution = solution / sum([t[1].weight for t in tasks_with_id])
+        solution = Evaluator126828().evaluate(in_data,Solution(0.0, schedule)).value
+        return Solution(solution, schedule=schedule)
