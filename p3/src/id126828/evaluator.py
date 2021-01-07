@@ -6,43 +6,17 @@ from p3.src.evaluator_api import Evaluator, EvaluatorOutput
 class Evaluator126828(Evaluator):
 
     def evaluate(self, in_data: Instance, output: Solution, time: float = 0) -> EvaluatorOutput:
+        score = 0.0
+        moments = [0 for _ in range(in_data.no_machines)]
+        for task_index in output.schedule:
+            task = in_data.tasks[task_index - 1]
+            moments[0] += task.duration[0]
+            moments[1] = max(moments[0], moments[1]) + task.duration[1]
+            moments[2] = max(moments[1], moments[2]) + task.duration[2]
+            score += max(0, moments[2] - task.due_date) * task.weight
+        score /= sum([task.weight for task in in_data.tasks])
+        correct = abs(score - output.score) <= EPS
+        if score != 0:
+            correct = correct or abs(score - output.score) / score <= EPS
 
-        start_times_1st_machine = [0] * in_data.no_tasks
-        timer = 0
-        # generowanie czasów dla pierwszej maszyny. Nieograniczone przez poprzednią, można zadania dawać jedno po drugim
-        for task_id in output.schedule:
-            timer += in_data.tasks[task_id - 1].duration[0]
-            start_times_1st_machine[task_id - 1] = timer
-        if in_data.no_tasks == 50:
-            print('first machine: ', start_times_1st_machine)
-        # druga maszyna, czasy na generowane na podstawie swoich czasów przetwarzania oraz początku wykonywania zadania
-        # ograniczonego przez koniec tego zadania z maszyny 1-wszej
-        local_timer = 0
-        for task_id in output.schedule:
-            # timer = max z lokalnego czasu i czasu zakończenia zadania na 1wszej maszynie
-            local_timer = max(local_timer, start_times_1st_machine[task_id - 1])
-            # dodaj do czasu czas przetwarzania i zwiększ lokalny timer
-            start_times_1st_machine[task_id - 1] = local_timer + in_data.tasks[task_id - 1].duration[1]
-            local_timer += in_data.tasks[task_id - 1].duration[1]
-        if in_data.no_tasks == 50:
-            print('second machine: ', start_times_1st_machine)
-        # trzecia maszyna analogicznie do drugiej, ale tutaj liczymy score
-        local_timer = 0
-        scores = []
-        for task_id in output.schedule:
-            # timer = max z lokalnego czasu i czasu zakończenia zadania na 1wszej maszynie
-            local_timer = max(local_timer, start_times_1st_machine[task_id - 1])
-            # dodaj do czasu czas przetwarzania i zwiększ lokalny timer
-            start_times_1st_machine[task_id - 1] = local_timer + in_data.tasks[task_id - 1].duration[2]
-            # jeżeli przekroczono due_time, oblicz wynik
-            local_timer += in_data.tasks[task_id - 1].duration[1]
-            scores.append(in_data.tasks[task_id - 1].weight * max(0, local_timer - in_data.tasks[task_id - 1].due_date))
-        if in_data.no_tasks == 50:
-            print('third machine: ', start_times_1st_machine)
-        result = sum(scores) / sum(task.weight for task in in_data.tasks)
-
-        correct = False
-        if abs(output.score - result) / result < EPS or abs(output.score - result) < EPS:
-            correct = True
-
-        return EvaluatorOutput(correct, result, time)
+        return EvaluatorOutput(correct, score, time)
