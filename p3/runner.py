@@ -70,6 +70,7 @@ class Runner:
         _, evals, algs = self.__index_setup()
         eval: Evaluator = evals[INDEX][0]()
         alg: Algorithm = algs[INDEX][0]()
+        print(alg.__class__.__name__)
         relative_losses_sum = 0.0
         relative_losses_count = 0
         my_relative_losses_sum = 0.0
@@ -82,8 +83,9 @@ class Runner:
                     instance = Instance.load(self.get_instance_path(index, n))
                     seq_output = eval.validate_schedule(instance, Solution.get_dummy_solution(n))
                     alg_output = eval.validate_algorithm(instance, alg)
-                    # assert alg_output.correct
+                    assert alg_output.correct
                     relative_loss = (seq_output.value - alg_output.value) / seq_output.value
+                    # print(seq_output.value, alg_output.value)
                     if index == INDEX:
                         my_relative_losses_sum += relative_loss
                         my_relative_losses_count += 1
@@ -120,6 +122,8 @@ class Runner:
                             loss, ti = '', ''
                     except FunctionTimedOut:
                         loss, ti = '', ''
+                    except:
+                        loss, to = '', ''
                 losses_row.append(loss)
                 times_row.append(ti)
             losses.append(losses_row)
@@ -146,6 +150,8 @@ class Runner:
     def __index_setup(self, keep_test_index=False):
         tup = [[self.__index(cls) for cls in cat] for cat in
                map(lambda x: x.__subclasses__(), [Generator, Evaluator, Algorithm])]
+        for x in Algorithm.__subclasses__():
+            tup[2]+= [self.__index(cls) for cls in x.__subclasses__()]
 
         def array_to_dict_array(array):
             res = {}
