@@ -28,7 +28,7 @@ TEST = 'test'
 TEST_INDEX = '000000'
 
 # TODO determine correct timeout
-TIMEOUT = 1
+TIMEOUT = 10
 
 
 class Runner:

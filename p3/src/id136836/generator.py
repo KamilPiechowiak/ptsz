@@ -9,8 +9,8 @@ class Generator136836(Generator):
         for _ in range(no_tasks):
             p = []
             for _ in range(no_machines):
-                p.append(randint(1, 20))
-            d = randint(2*sum(p), 60*no_tasks)
-            w = randint(1, 10)
+                p.append(randint(1, 50))
+            d = randint(sum(p), sum(p) * 5)
+            w = randint(1, 120)
             tasks.append(Task(p, d, w))
         return Instance(no_tasks, no_machines, tasks)
