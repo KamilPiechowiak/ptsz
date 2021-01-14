@@ -54,6 +54,9 @@ class Algorithm136823(Algorithm):
         average_weight = self.get_average_weight(tasks)
         schedule = []
         total_latency = 0
+        weights_sum = 0
+        for task in tasks:
+            weights_sum += task.weight
 
         for i in range(in_data.no_tasks):
             selected_task = self.chose_next_element(tasks, machine_times, average_weight)
@@ -61,4 +64,4 @@ class Algorithm136823(Algorithm):
             schedule.append(selected_task + 1)
             machine_times = self.update_machine_times(machine_times, in_data.tasks[selected_task])
             total_latency += max(0, machine_times[in_data.no_machines - 1] - in_data.tasks[selected_task].due_date) * in_data.tasks[selected_task].weight
-        return Solution(total_latency, schedule=Schedule(in_data.no_tasks, schedule))
+        return Solution(total_latency / weights_sum, schedule=Schedule(in_data.no_tasks, schedule))
