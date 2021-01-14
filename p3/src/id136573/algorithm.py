@@ -8,7 +8,7 @@ def simple_wedd_sort(in_data: Instance):
     schedule = [i + 1 for i in range(in_data.no_tasks)]
 
     def factor(task):
-        return exp(0.6 * log(task.due_date+1) + 0.4 * log(sum(task.duration))) / task.weight
+        return exp(0.6 * log(task.due_date/task.weight+1) + 0.4 * log(sum(task.duration)))
 
     result = sorted(schedule, key=lambda x: factor(in_data.tasks[x-1]))
     return result
