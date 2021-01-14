@@ -28,7 +28,7 @@ TEST = 'test'
 TEST_INDEX = '000000'
 
 # TODO determine correct timeout
-TIMEOUT = 1
+TIMEOUT = 10
 
 
 class Runner:
@@ -123,7 +123,7 @@ class Runner:
                     except FunctionTimedOut:
                         loss, ti = '', ''
                     except:
-                        loss, to = '', ''
+                        loss, ti = '', ''
                 losses_row.append(loss)
                 times_row.append(ti)
             losses.append(losses_row)

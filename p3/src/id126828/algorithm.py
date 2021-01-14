@@ -2,12 +2,12 @@ import sys
 
 from p3.src.algorithm_api import Algorithm
 from p3.src.data_api import Instance, Solution, Schedule
+from p3.src.id126828.evaluator import Evaluator126828
 
 
 def find_best_task_by_due_date_duration(tasks, clock):
     best_solution = sys.maxsize
     best_task = None
-    sol = 0
     id_list = 0
     for id_in_list, (task_id, task) in enumerate(tasks):
         # count acc clock for task
@@ -16,16 +16,14 @@ def find_best_task_by_due_date_duration(tasks, clock):
         task_sol = task.weight * max(0, task_finish_time - task.due_date)
         if task_sol == 0:
             id_list = id_in_list
-            sol = task_sol
             best_task = task_id
             break
         # check value of solution for task if its less than
         if task_sol < best_solution:
             id_list = id_in_list
-            sol = task_sol
             best_task = task_id
 
-    return id_list, sol, best_task
+    return id_list, best_task
 
 
 def add_rest_tasks_to_schedule(tasks, schedule, solution, clock):
@@ -46,32 +44,25 @@ class Algorithm126828(Algorithm):
         4. 
         """
         tasks_with_id = list(enumerate(in_data.tasks, 1))
-        # print(' ======================= ')
-        # print([t[0] for t in tasks_with_id], end='\n')
+
 
         tasks_with_id.sort(key=lambda t: (t[1].due_date, -t[1].weight))
-        # print(' ======================= \n'
-        #       'sorted tasks with id\'s')
-        # print([t[0] for t in tasks_with_id], end='\n')
+
         # sort out tasks with high due_date and low weight or with no weight
-        less_important_tasks = list(filter(lambda task: task[1].weight < 20, tasks_with_id))
-        # print(' ======================= \n'
-        #       'less important tasks ')
-        # print([t[0] for t in less_important_tasks], end='\n')
+        less_important_tasks = list(filter(lambda task: task[1].weight < (in_data.no_tasks/(0.05 * in_data.no_tasks)), tasks_with_id))
+
         # take all tasks with weight != 0 which have higher weight and due date isn't high
-        tasks_to_proceed = list(filter(lambda task: task[1].weight >= 20, tasks_with_id))
-        # print(' ======================= \n'
-        #       'tasks to proceed')
-        # print([t[0] for t in tasks_to_proceed], end='\n')
+        tasks_to_proceed = list(filter(lambda task: task[1].weight >= (in_data.no_tasks/(0.05 * in_data.no_tasks)), tasks_with_id))
+
         schedule_by_id = []
         solution = 0
         clock = 0
         while len(tasks_to_proceed) > 0:
             # find best fitting
-            id_in_list, partial_solution, best_task_id = find_best_task_by_due_date_duration(tasks_to_proceed,
-                                                                                             clock)
+            id_in_list,  best_task_id = find_best_task_by_due_date_duration(tasks_to_proceed,
+                                                                                          clock)
             # add to solution  new values
-            solution += partial_solution
+
             schedule_by_id.append(best_task_id)
             # increase clock and remove chosen task from available
             clock += sum(tasks_to_proceed[id_in_list][1].duration)
@@ -79,6 +70,6 @@ class Algorithm126828(Algorithm):
 
         add_rest_tasks_to_schedule(less_important_tasks, schedule_by_id, solution, clock)
 
-        solution = solution / sum([t[1].weight for t in tasks_with_id])
-
-        return Solution(solution, schedule=Schedule(in_data.no_tasks, schedule_by_id))
+        schedule = Schedule(in_data.no_tasks, schedule_by_id)
+        solution = Evaluator126828().evaluate(in_data,Solution(0.0, schedule)).value
+        return Solution(solution, schedule=schedule)
