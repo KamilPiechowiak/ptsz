@@ -123,7 +123,7 @@ class Runner:
                     except FunctionTimedOut:
                         loss, ti = '', ''
                     except:
-                        loss, to = '', ''
+                        loss, ti = '', ''
                 losses_row.append(loss)
                 times_row.append(ti)
             losses.append(losses_row)
